@@ -1,0 +1,2 @@
+genome	host	nonhost
+512070	512070	3623880

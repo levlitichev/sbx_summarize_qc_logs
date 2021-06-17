@@ -1,0 +1,14 @@
+=== Summary ===
+
+Total read pairs processed:          456,123
+  Read 1 with adapter:               222,222 (22.2%)
+  Read 2 with adapter:               333,333 (33.3%)
+Pairs written (passing filters):     555,555 (555.5%)
+
+Total basepairs processed: 200,000 bp
+  Read 1:   145,000 bp
+  Read 2:   100,000 bp
+Total written (filtered):  180,000 bp (90.0%)
+  Read 1:   123,456,789 bp
+  Read 2:   101,101,101 bp
+
