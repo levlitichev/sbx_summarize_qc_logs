@@ -54,7 +54,7 @@ def cutadapt_summary(cutadapt_paths, is_single_end=False):
 
     for ii, this_path in enumerate(cutadapt_paths):
         this_filename = os.path.splitext(os.path.basename(this_path))[0]
-        this_file_handle = open(this_path, "r")
+        this_file_handle = open(this_path, "rt")
 
         for line in this_file_handle:
             if re.search("Total read pairs processed", line):
@@ -65,6 +65,9 @@ def cutadapt_summary(cutadapt_paths, is_single_end=False):
                 this_bps_processed = int(line.split()[-2].replace(",", ""))
             elif re.search("Total written", line):
                 this_bps_written = int(line.split()[-3].replace(",", ""))
+
+                # no need to read the rest of the file
+                break
             else:
                 pass
         this_file_handle.close()
@@ -92,7 +95,7 @@ def trimmomatic_summary(trimmomatic_paths, is_single_end=False):
 
     for ii, this_path in enumerate(trimmomatic_paths):
         this_filename = os.path.splitext(os.path.basename(this_path))[0]
-        this_file_handle = open(this_path, "r")
+        this_file_handle = open(this_path, "rt")
 
         for line in this_file_handle:
             if re.search("Input Read Pairs", line):
@@ -123,8 +126,13 @@ def komplexity_summary(komplexity_paths, is_single_end=False):
 
     for ii, this_path in enumerate(komplexity_paths):
         this_filename = os.path.splitext(os.path.basename(this_path))[0]
-        this_file_handle = open(this_path, "r")
-        this_read_pairs_removed = len(this_file_handle.readlines())
+        this_file_handle = open(this_path, "rt")
+        # this_read_pairs_removed = len(this_file_handle.readlines())
+        this_read_pairs_removed = 0
+
+        for _ in this_file_handle:
+            this_read_pairs_removed += 1
+
         this_file_handle.close()
 
         list_of_lists[ii] = [this_filename, this_read_pairs_removed]
