@@ -1,0 +1,2 @@
+genome	host	nonhost
+21	26	27

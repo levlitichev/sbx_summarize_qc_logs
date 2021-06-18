@@ -157,12 +157,22 @@ def decontam_summary(decontam_paths, is_single_end=False):
         list_of_lists[ii] = [this_filename,
                              this_read_pairs_written, this_read_pairs_removed]
 
-    out_df = pd.DataFrame(list_of_lists, columns=DECONTAM_COLUMN_NAMES)
+    tmp_out_df = pd.DataFrame(list_of_lists, columns=DECONTAM_COLUMN_NAMES)
+
+    # if paired-end, need to sum the two files corresponding to the same sample
+    if not is_single_end:
+        out_df = tmp_out_df
+        out_df["filename"] = tmp_out_df["filename"].str[:-2]
+        out_df = tmp_out_df.groupby(["filename"]).sum().reset_index()
+
     return out_df
 
 
 def combine_into_one(cutadapt_df, trimmomatic_df, komplexity_df, decontam_df, is_single_end=False):
-    out_df = cutadapt_df.merge(trimmomatic_df, on="filename").merge(komplexity_df, on="filename").merge(decontam_df, on="filename")
+    out_df = cutadapt_df.merge(
+        trimmomatic_df, on="filename", how="outer").merge(
+        komplexity_df, on="filename", how="outer").merge(
+        decontam_df, on="filename", how="outer")
     return out_df
 
 

@@ -1,0 +1,2 @@
+genome	host	nonhost
+1000	2000	30000

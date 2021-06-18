@@ -1,5 +1,6 @@
 import os
 import unittest
+import numpy as np
 import pandas as pd
 import summarize_qc_logs
 
@@ -88,9 +89,12 @@ class TestSummarizeQcLogs(unittest.TestCase):
         pd.testing.assert_frame_equal(expected_df, out_df)
 
     def test_get_decontam_paths(self):
-        expected_paths = [os.path.join(ASSETS_DIR, "decontam", "sample_1.txt"),
-                          os.path.join(ASSETS_DIR, "decontam", "sample_2.txt"),
-                          os.path.join(ASSETS_DIR, "decontam", "sample_3.txt")]
+        expected_paths = [os.path.join(ASSETS_DIR, "decontam", "sample_1_1.txt"),
+                          os.path.join(ASSETS_DIR, "decontam", "sample_2_1.txt"),
+                          os.path.join(ASSETS_DIR, "decontam", "sample_3_1.txt"),
+                          os.path.join(ASSETS_DIR, "decontam", "sample_1_2.txt"),
+                          os.path.join(ASSETS_DIR, "decontam", "sample_2_2.txt"),
+                          os.path.join(ASSETS_DIR, "decontam", "sample_3_2.txt")]
         out_paths = summarize_qc_logs.get_decontam_paths(ASSETS_DIR)
         self.assertCountEqual(expected_paths, out_paths)
 
@@ -99,12 +103,16 @@ class TestSummarizeQcLogs(unittest.TestCase):
         self.assertIn("No decontam files found", str(e.exception))
 
     def test_decontam_paired(self):
-        in_paths = [os.path.join(ASSETS_DIR, "decontam", "sample_1.txt"),
-                    os.path.join(ASSETS_DIR, "decontam", "sample_2.txt"),
-                    os.path.join(ASSETS_DIR, "decontam", "sample_3.txt")]
-        expected_df = pd.DataFrame([["sample_1", 3623880, 512070],
-                                    ["sample_2", 300, 200],
-                                    ["sample_3", 3000, 5]],
+        in_paths = [os.path.join(ASSETS_DIR, "decontam", "sample_1_1.txt"),
+                    os.path.join(ASSETS_DIR, "decontam", "sample_2_1.txt"),
+                    os.path.join(ASSETS_DIR, "decontam", "sample_3_1.txt"),
+                    os.path.join(ASSETS_DIR, "decontam", "sample_1_2.txt"),
+                    os.path.join(ASSETS_DIR, "decontam", "sample_2_2.txt"),
+                    os.path.join(ASSETS_DIR, "decontam", "sample_3_2.txt")
+                    ]
+        expected_df = pd.DataFrame([["sample_1", 80000, 32000],
+                                    ["sample_2", 310, 205],
+                                    ["sample_3", 3027, 31]],
                                    columns=["filename",
                                             "decontam_read_pairs_written",
                                             "decontam_read_pairs_removed"])
@@ -119,8 +127,7 @@ class TestSummarizeQcLogs(unittest.TestCase):
                                             "cutadapt_read_pairs_written",
                                             "cutadapt_bps_processed",
                                             "cutadapt_bps_written"])
-        trimmomatic_df = pd.DataFrame([["sample_1", 8, 10],
-                                       ["sample_2", 11, 12]],
+        trimmomatic_df = pd.DataFrame([["sample_1", 8, 10]],
                                    columns=["filename",
                                             "trimmomatic_read_pairs_processed",
                                             "trimmomatic_read_pairs_written"])
@@ -133,7 +140,7 @@ class TestSummarizeQcLogs(unittest.TestCase):
                                             "decontam_read_pairs_removed"])
 
         expected_df = pd.DataFrame([["sample_1", 1, 2, 3, 4, 8, 10, 3, 20, 30],
-                                    ["sample_2", 5, 7, 8, 6, 11, 12, 20, 33, 31]],
+                                    ["sample_2", 5, 7, 8, 6, np.nan, np.nan, 20, 33, 31]],
                                    columns=["filename",
                                             "cutadapt_read_pairs_processed", "cutadapt_read_pairs_written",
                                             "cutadapt_bps_processed", "cutadapt_bps_written",
